@@ -1,0 +1,37 @@
+show databases;
+
+create database VITCampus1;
+
+drop database vitcampus1;
+
+create database vitcampus;
+use vitcampus;
+
+create table cse(
+sid int8,
+sname varchar(50),
+smarks int1
+);
+
+show tables from vitcampus;
+
+select * from cse;
+
+insert into cse values(105,'anu', 98);
+insert into cse values(109,'anshu', 93);
+
+create table ece(
+sid int8,
+sname varchar(50),
+smarks int1
+);
+
+show tables from vitcampus;
+
+select * from ece;
+
+insert into ece values(101,'aditya', 98);
+insert into ece values(102,'aman', 96);
+insert into ece values(105,'anu', 98);
+insert into ece values(108,'ansh', 96);
+insert into ece values(109,'anshu', 98);
