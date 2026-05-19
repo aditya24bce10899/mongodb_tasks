@@ -1,0 +1,84 @@
+use vitcampus;
+
+show tables from vitcampus;
+
+use job;
+select * from worker;
+
+select first_name,department,salary from worker
+where department='admin' or salary >= 100000;
+
+select * from worker;
+
+select worker_id,first_name,department,salary from worker
+where worker_id not in (1,6,7);
+
+select * from worker 
+where salary not between 110000 and 300000;
+
+SELECT * FROM worker
+WHERE salary BETWEEN 100000 AND 500000
+AND department NOT IN ('hr','admin');
+
+select * from worker;
+
+-- like function
+select * from worker where first_name like '__i%';
+select * from worker where first_name like 'V%e_';
+select * from worker where first_name like '_i__%';
+select * from worker where first_name like '_i__a_';
+select * from worker where first_name like 'M_%';
+select * from worker where last_name like 'a_%';
+
+select * from worker;
+
+select min(salary) from worker;
+select min(salary) from worker where department='HR';
+
+select count(worker_id) from worker where department='Admin';
+
+select sum(salary) from worker where department='Admin';
+
+select avg(salary) from worker where department='Admin';
+
+select min(salary) from worker where department='Admin' and first_name not like '%a%' ;
+
+select * from worker where department='admin' and first_name not like '%a';
+
+select * from worker where department = 'Admin'and first_name not like 'a%' and salary = (select MIN(salary) from worker where department = 'Admin');
+
+-- merge and takes duplicates values also
+select salary from worker 
+union all
+select salary from worker;
+
+-- merge and does not takes duplicates values also
+select salary from worker 
+union
+select salary from worker;
+
+
+select worker_id as RollNumber from worker; -- temprory printing 
+
+select department from worker;
+select distinct(department) from worker; -- takes unique values
+
+-- case statement
+select worker_id, first_name,
+CASE
+    WHEN salary > 300000 THEN 'Rich people'
+    WHEN salary >= 100000 and salary <299999 THEN 'Middle'
+    ELSE 'Poor'
+END 
+AS Status FROM worker;
+
+-- we make defalut query so that we donot have to write whole query
+select min(salary) from worker where department='admin';
+select max(salary) from worker where department='admin';
+
+create view minSalaryAdmin as select min(salary) from worker where department='admin';
+create view maxSalaryAdmin as select max(salary) from worker where department='admin';
+
+select * from maxsalaryadmin; -- this will find max salary
+select * from minsalaryadmin; -- this will find min salary
+
