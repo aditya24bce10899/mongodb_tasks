@@ -1,0 +1,127 @@
+use vitcampus;
+
+-- Create a table named Persons
+CREATE TABLE Persons (
+    ID int NOT NULL,                         -- ID cannot be NULL
+    LastName varchar(255) UNIQUE NOT NULL,  -- LastName must be unique and not NULL
+    FirstName varchar(255) NOT NULL,        -- FirstName cannot be NULL
+    Age int                                 -- Age column
+);
+
+-- Display table structure
+DESC Persons;
+
+-- Insert first record
+INSERT INTO Persons 
+VALUES (101, 'v', 'jayant', NULL);
+
+-- Insert second record
+INSERT INTO Persons 
+VALUES (102, 'aditya', 'kumar', 25);
+
+-- Display all records from table
+SELECT * FROM Persons;
+
+-- Add UNIQUE constraint on Age column
+ALTER TABLE Persons
+ADD UNIQUE (Age);
+
+-- Remove UNIQUE constraint from Age column
+ALTER TABLE Persons
+DROP CONSTRAINT Age;
+
+-- Add CHECK constraint to allow only Age >= 18
+ALTER TABLE Persons
+ADD CHECK (Age >= 18);
+
+-- Try inserting a record with Age less than 18
+-- This will give an error because CHECK condition fails
+INSERT INTO Persons 
+VALUES (107, 'sushant', 'singh', 17);
+
+-- add 1 column to persons table 
+alter table persons 
+add city varchar(100);
+
+-- delete single column city from table persons
+alter table persons drop column city;
+
+-- adding 'city' column with default value to table 'persons'
+alter table persons 
+add city varchar(255) default 'Bhopal';
+
+select * from persons;
+
+-- display structure of person table
+desc persons;
+
+
+-- Create Products table
+CREATE TABLE products (
+    pid int PRIMARY KEY,
+    pname varchar(100) NOT NULL,
+    prefNo int NOT NULL UNIQUE
+);
+
+-- Display structure
+DESC products;
+
+-- Insert record into products
+INSERT INTO products 
+VALUES (102, "furniture", 19930);
+
+-- Display records
+SELECT * FROM products;
+
+-- Add PRIMARY KEY to Persons table
+ALTER TABLE Persons
+ADD PRIMARY KEY (ID);
+
+-- Remove PRIMARY KEY
+ALTER TABLE Persons
+DROP PRIMARY KEY;
+
+-- Delete products table
+DROP TABLE products;
+
+-- Create category table
+CREATE TABLE category (
+    cid int PRIMARY KEY,
+    cname varchar(100) NOT NULL
+);
+
+-- Insert records into category
+INSERT INTO category 
+VALUES 
+(101, 'electronics'),
+(102, 'Home App');
+
+-- Display category table
+SELECT * FROM category;
+
+-- Create products table with FOREIGN KEY
+CREATE TABLE products (
+    pid int PRIMARY KEY,
+    pname varchar(100) NOT NULL,
+    cid int,
+    FOREIGN KEY (cid) REFERENCES category(cid)
+);
+
+-- Display structure
+DESC products;
+
+-- This will give error if cid=101 is referenced in products
+DELETE FROM category 
+WHERE cid = 101;
+
+-- UPDATE statement
+UPDATE products
+SET pname = 'Updated Product'
+WHERE pid = 504;
+
+-- Correct insert statement
+INSERT INTO products
+VALUES (504, 'Power Bank Samsung', 64-bit encry key);
+
+-- Display products table
+SELECT * FROM products;
