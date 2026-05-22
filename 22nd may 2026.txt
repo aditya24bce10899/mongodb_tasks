@@ -1,0 +1,41 @@
+-- joins 
+
+use job;
+
+create table department(
+did int primary key,
+dname varchar(25) not null unique);
+
+insert into department values(101,'cse'),(102,'ece'),(103,'civil'),(104,'aero'),(105,'mech');
+
+select * from department order by did;
+
+create table hod(
+hid int primary key,
+hname varchar(50) not null unique);
+
+insert into hod values(101,'aditya'),(102,'Sushant'),(103,'hello'),(104,'Good');
+select * from hod;
+
+select * from department cross join hod order by did asc;
+
+select * from department inner join hod on department.did = hod.hid;
+
+select * from department natural join hod;
+
+select * from department left outer join
+hod on (department.did=hod.hid) order by did asc;
+
+-- full join 
+SELECT *
+FROM department
+LEFT JOIN hod
+ON department.did = hod.hid
+
+UNION
+
+SELECT *
+FROM department
+RIGHT JOIN hod
+ON department.did = hod.hid
+ORDER BY did ASC;
