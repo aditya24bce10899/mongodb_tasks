@@ -1,0 +1,69 @@
+show databases
+admin   40.00 KiB
+config  12.00 KiB
+local   88.00 KiB
+show dbs
+admin   40.00 KiB
+config  12.00 KiB
+local   88.00 KiB
+use vit
+switched to db vit
+db
+vit
+db dropDatabase()
+SyntaxError: Missing semicolon. (1:2)
+
+> 1 | db dropDatabase()
+    |   ^
+db.dropDatabase()
+{ ok: 1, dropped: 'vit' }
+show dbs
+admin   40.00 KiB
+config  60.00 KiB
+local   88.00 KiB
+db
+vit
+db.createCollection("Student")
+{ ok: 1 }
+show collections
+Student
+db.Student.drop()
+true
+show collections
+db.createCollection("Employee")
+{ ok: 1 }
+show databases
+admin   40.00 KiB
+config  92.00 KiB
+local   88.00 KiB
+vit      8.00 KiB
+db.createCollection("Employee")
+{ ok: 1 }
+db.Employee.insert({name:'Aditya kumar', department:'CSE'})
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6a145834154bdaf982de8185')
+  }
+}
+db.Employee.insert({name:"ram",mark:98,location:"bhagalpur"})
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6a145874154bdaf982de8186')
+  }
+}
+db.Employee.find()
+{
+  _id: ObjectId('6a145834154bdaf982de8185'),
+  name: 'Aditya kumar',
+  department: 'CSE'
+}
+{
+  _id: ObjectId('6a145874154bdaf982de8186'),
+  name: 'ram',
+  mark: 98,
+  location: 'bhagalpur'
+}
+vit
