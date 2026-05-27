@@ -1,0 +1,455 @@
+/* IN Operator : { field: { $in: [<value1>, <value2>,...] }} */
+db.products.insertMany([
+    { "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate": ISODate("2011-05-14"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 },"color":["white","black"],"storage":[64,128,256]},
+    { "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate": ISODate("2011-09-01") , "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 },"color":["white","black","purple"],"storage":[128,256,512]},
+    { "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate": ISODate("2015-01-14"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 },"color":["blue"],"storage":[16,64,128]},
+    { "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate": ISODate("2020-05-14"),"spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256,1024]},
+    { "_id" : 5, "name" : "SmartPhone", "price" : 599,"releaseDate": ISODate("2022-09-14"), "spec" : { "ram" : 4, "screen" : 5.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256]}
+ ])
+MongoBulkWriteError: E11000 duplicate key error collection: Vitcampus.products index: _id_ dup key: { _id: 1 }
+db.products.find({
+    price: {
+        $gte: 799
+    }
+}, {
+    name: 1,
+    price: 1
+})
+{
+  _id: 1,
+  name: 'xPhone',
+  price: 799
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  price: 899
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  price: 899
+}
+db.products.find({
+    "spec.screen": {
+        $gte: 9.5
+    }
+}, {
+    name: 1,
+    "spec.screen": 1
+})
+{
+  _id: 2,
+  name: 'xTablet',
+  spec: {
+    screen: 9.5
+  }
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  spec: {
+    screen: 9.7
+  }
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  spec: {
+    screen: 9.7
+  }
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  spec: {
+    screen: 9.7
+  }
+}
+db.products.find({
+    price: {
+        $in: [699, 799]
+    }
+}, {
+    name: 1,
+    price: 1
+})
+{
+  _id: 1,
+  name: 'xPhone',
+  price: 799
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  price: 699
+}
+db.products.find({
+    color: {
+        $in: ["black", "white"]
+    }
+}, {
+    name: 1,
+    color: 1
+})
+{
+  _id: 1,
+  name: 'xPhone',
+  color: [
+    'white',
+    'black'
+  ]
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  color: [
+    'white',
+    'black',
+    'purple'
+  ]
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  color: [
+    'white',
+    'orange',
+    'gold',
+    'gray'
+  ]
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  color: [
+    'white',
+    'orange',
+    'gold',
+    'gray'
+  ]
+}
+db.products.find({
+    color: {
+        $in: [/^g+/, /^w+/]
+    }
+}, {
+    name: 1,
+    color: 1
+})
+{
+  _id: 1,
+  name: 'xPhone',
+  color: [
+    'white',
+    'black'
+  ]
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  color: [
+    'white',
+    'black',
+    'purple'
+  ]
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  color: [
+    'white',
+    'orange',
+    'gold',
+    'gray'
+  ]
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  color: [
+    'white',
+    'orange',
+    'gold',
+    'gray'
+  ]
+}
+/* Not IN Operator : { field: { $nin: [ <value1>, <value2> ...]} } */
+db.products.find({
+    price: {
+        $nin: [699, 799]
+    }
+}, {
+    name: 1,
+    price: 1
+})
+{
+  _id: 2,
+  name: 'xTablet',
+  price: 899
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  price: 899
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  price: 599
+}
+db.products.find({
+    color: {
+        $nin: ["black", "white"]
+    }
+}, {
+    name: 1,
+    color: 1
+})
+{
+  _id: 3,
+  name: 'SmartTablet',
+  color: [
+    'blue'
+  ]
+}
+db.products.find({
+    color: {
+        $nin: [/^g+/, /^w+/]
+    }
+}, {
+    name: 1,
+    color: 1
+})
+{
+  _id: 3,
+  name: 'SmartTablet',
+  color: [
+    'blue'
+  ]
+}
+/* AND Operator $and :[{expression1}, {expression2},...] */
+db.products.insertMany([
+	{ "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate" : ISODate("2011-05-14T00:00:00Z"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 }, "color" : [ "white", "black" ], "storage" : [ 64, 128, 256 ] },
+	{ "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate" : ISODate("2011-09-01T00:00:00Z"), "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 }, "color" : [ "white", "black", "purple" ], "storage" : [ 128, 256, 512 ] },
+	{ "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate" : ISODate("2015-01-14T00:00:00Z"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 }, "color" : [ "blue" ], "storage" : [ 16, 64, 128 ] },
+	{ "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate" : ISODate("2020-05-14T00:00:00Z"), "spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 }, "color" : [ "white", "orange", "gold", "gray" ], "storage" : [ 128, 256, 1024 ] },
+	{ "_id" : 5, "name" : "SmartPhone", "price" : 599, "releaseDate" : ISODate("2022-09-14T00:00:00Z"), "spec" : { "ram" : 4, "screen" : 9.7, "cpu" : 1.66 }, "color" : [ "white", "orange", "gold", "gray" ], "storage" : [ 128, 256 ] },
+	{ "_id" : 6, "name" : "xWidget", "spec" : { "ram" : 64, "screen" : 9.7, "cpu" : 3.66 }, "color" : [ "black" ], "storage" : [ 1024 ] }
+])
+MongoBulkWriteError: E11000 duplicate key error collection: Vitcampus.products index: _id_ dup key: { _id: 1 }
+db.products.find({
+    $and: [{
+        price: 899
+    }, {
+        color: {
+            $in: ["white", "black"]
+        }
+    }]
+}, {
+    name: 1,
+    price: 1,
+    color: 1
+})
+{
+  _id: 2,
+  name: 'xTablet',
+  price: 899,
+  color: [
+    'white',
+    'black',
+    'purple'
+  ]
+}
+db.products.find({
+    $and: [{
+        price: 699
+    }, {
+        price: {
+            $exists: true
+        }
+    }]
+}, {
+    name: 1,
+    price: 1,
+    color: 1
+})
+{
+  _id: 4,
+  name: 'SmartPad',
+  price: 699,
+  color: [
+    'white',
+    'orange',
+    'gold',
+    'gray'
+  ]
+}
+/* The following example uses the implicit AND operator and returns the same result:*/
+db.products.find({
+    price: {
+        $eq: 699,
+        $exists: true
+    }
+}, {
+    name: 1,
+    price: 1,
+    color: 1
+})
+{
+  _id: 4,
+  name: 'SmartPad',
+  price: 699,
+  color: [
+    'white',
+    'orange',
+    'gold',
+    'gray'
+  ]
+}
+/* OR Operator : $or:[{expression1}, {expression2},...] */
+db.products.drop()
+true
+db.products.insertMany([
+	{ "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate" : ISODate("2011-05-14T00:00:00Z"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 }, "color" : [ "white", "black" ], "storage" : [ 64, 128, 256 ] },
+	{ "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate" : ISODate("2011-09-01T00:00:00Z"), "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 }, "color" : [ "white", "black", "purple" ], "storage" : [ 128, 256, 512 ] },
+	{ "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate" : ISODate("2015-01-14T00:00:00Z"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 }, "color" : [ "blue" ], "storage" : [ 16, 64, 128 ] },
+	{ "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate" : ISODate("2020-05-14T00:00:00Z"), "spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 }, "color" : [ "white", "orange", "gold", "gray" ], "storage" : [ 128, 256, 1024 ] },
+	{ "_id" : 5, "name" : "SmartPhone", "price" : 599, "releaseDate" : ISODate("2022-09-14T00:00:00Z"), "spec" : { "ram" : 4, "screen" : 9.7, "cpu" : 1.66 }, "color" : [ "white", "orange", "gold", "gray" ], "storage" : [ 128, 256 ] }
+])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5
+  }
+}
+db.products.find({
+    $or: [{
+        price: 799
+    }, {
+        price: 899
+    }]
+}, {
+    name: 1,
+    price: 1
+})
+{
+  _id: 1,
+  name: 'xPhone',
+  price: 799
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  price: 899
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  price: 899
+}
+db.products.find({
+    $or: [
+        { price: {$lt: 699} },
+        { price: {$gt: 799} }
+    ]
+}, {
+    name: 1,
+    price: 1
+})
+{
+  _id: 2,
+  name: 'xTablet',
+  price: 899
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  price: 899
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  price: 599
+}
+/* NOT Operator : { field: { $not: { <expression> } } } */
+db.products.find({
+    price: {
+        $not: {
+            $gt: 699
+        }
+    }
+}, {
+    name: 1,
+    price: 1
+})
+{
+  _id: 4,
+  name: 'SmartPad',
+  price: 699
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  price: 599
+}
+db.products.find({
+    name: {
+        $not: /^Smart+/
+    }
+}, {
+    name: 1
+})
+{
+  _id: 1,
+  name: 'xPhone'
+}
+{
+  _id: 2,
+  name: 'xTablet'
+}
+/* NOR Operator : { $nor: [ { <expression1> }, { <expression2> },...] } */
+db.products.drop()
+true
+db.products.insertMany([
+	{ "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate" : ISODate("2011-05-14T00:00:00Z"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 }, "color" : [ "white", "black" ], "storage" : [ 64, 128, 256 ] },
+	{ "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate" : ISODate("2011-09-01T00:00:00Z"), "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 }, "color" : [ "white", "black", "purple" ], "storage" : [ 128, 256, 512 ] },
+	{ "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate" : ISODate("2015-01-14T00:00:00Z"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 }, "color" : [ "blue" ], "storage" : [ 16, 64, 128 ] },
+	{ "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate" : ISODate("2020-05-14T00:00:00Z"), "spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 }, "color" : [ "white", "orange", "gold", "gray" ], "storage" : [ 128, 256, 1024 ] },
+	{ "_id" : 5, "name" : "SmartPhone", "price" : 599, "releaseDate" : ISODate("2022-09-14T00:00:00Z"), "spec" : { "ram" : 4, "screen" : 9.7, "cpu" : 1.66 }, "color" : [ "white", "orange", "gold", "gray" ], "storage" : [ 128, 256 ] },
+	{ "_id" : 6, "name" : "xWidget", "spec" : { "ram" : 64, "screen" : 9.7, "cpu" : 3.66 }, "color" : [ "black" ], "storage" : [ 1024 ] }
+])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5,
+    '5': 6
+  }
+}
+db.products.find({
+    $nor :[
+        { price: 899},
+        { color: "gold"}
+    ]
+}, {
+    name: 1,
+    price: 1, 
+    color: 1
+})
+{
+  _id: 1,
+  name: 'xPhone',
+  price: 799,
+  color: [
+    'white',
+    'black'
+  ]
+}
