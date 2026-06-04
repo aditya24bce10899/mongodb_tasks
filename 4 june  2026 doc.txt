@@ -1,0 +1,340 @@
+
+import com.mongodb.client.*;
+import org.bson.Document;
+import java.util.Arrays;
+
+public class MongoUnsetDemo {
+
+    public static void main(String[] args) {
+
+        // Connect to MongoDB
+        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+
+        // Create/Open Database
+        MongoDatabase database = mongoClient.getDatabase("ProductStore");
+
+        // Create/Open Collection
+        MongoCollection<Document> collection =
+                database.getCollection("products");
+
+        // Insert Documents
+        collection.insertMany(Arrays.asList(
+
+                new Document("_id", 1)
+                        .append("name", "xPhone")
+                        .append("price", 799),
+
+                new Document("_id", 2)
+                        .append("name", "xTablet")
+                        .append("price", 899),
+
+                new Document("_id", 3)
+                        .append("name", "SmartTablet")
+                        .append("price", 899)
+
+        ));
+
+        System.out.println("Documents Inserted Successfully");
+
+        mongoClient.close();
+    }
+}
+
+
+
+// Remove the price field from document _id = 1: 
+
+
+
+import static com.mongodb.client.model.Filters.eq;
+
+collection.updateOne(
+        eq("_id", 1),
+        new Document("$unset",
+                new Document("price", ""))
+);
+
+
+
+
+FindIterable<Document> docs = collection.find();
+
+for (Document doc : docs) {
+    System.out.println(doc.toJson());
+}
+
+
+
+// Complete $unse
+
+
+collection.updateMany(
+        new Document(),
+        new Document("$unset",
+                new Document("price", ""))
+);
+
+
+
+
+
+
+
+// MongoDB Upsert
+
+
+
+
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
+
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
+
+public class MongoDB_Upsert {
+
+    public static void main(String[] args) {
+
+        // Connect to MongoDB
+        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+
+        // Select database
+        MongoDatabase database = mongoClient.getDatabase("CollegeDB");
+
+        // Select collection
+        MongoCollection<Document> collection = database.getCollection("products");
+
+        // Upsert operation
+        UpdateOptions options = new UpdateOptions().upsert(true);
+
+        collection.updateOne(
+                Filters.eq("_id", 6),
+                new Document("$set",
+                        new Document("price", 999)
+                                .append("name", "NewPhone")),
+                options);
+
+        System.out.println("Upsert operation completed!");
+
+        // Display document
+        Document doc = collection.find(Filters.eq("_id", 6)).first();
+
+        System.out.println("Document after Upsert:");
+        System.out.println(doc);
+
+        mongoClient.close();
+    }
+}
+
+
+
+// 
+ 
+
+Upsert operation completed!
+
+Document after Upsert:
+Document{{_id=6, price=999, name=NewPhone}}
+
+
+// 
+
+
+Upsert operation completed!
+
+Document after Upsert:
+Document{{_id=6, price=999, name=NewPhone}}
+
+
+
+// Updating Existing Product
+
+
+collection.updateOne(
+        Filters.eq("_id", 1),
+        new Document("$set",
+                new Document("price", 1200)
+                        .append("name", "xPhone Pro")),
+        new UpdateOptions().upsert(true));
+
+
+
+
+
+
+// delete one 
+
+
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
+
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
+
+public class MongoDB_DeleteOne {
+
+    public static void main(String[] args) {
+
+        // Connect to MongoDB
+        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+
+        // Select Database
+        MongoDatabase database = mongoClient.getDatabase("CollegeDB");
+
+        // Select Collection
+        MongoCollection<Document> collection =
+                database.getCollection("products");
+
+        // Delete one document
+        DeleteResult result =
+                collection.deleteOne(Filters.eq("_id", 1));
+
+        System.out.println("Documents Deleted: "
+                + result.getDeletedCount());
+
+        mongoClient.close();
+    }
+}
+
+
+
+
+Upsert operation completed!
+
+Document after Upsert:
+Document{{_id=6, price=999, name=NewPhone}}
+
+
+Upsert operation completed!
+
+Document after Upsert:
+Document{{_id=6, price=999, name=NewPhone}}
+
+
+
+// delete  (unset)
+
+
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
+
+import com.mongodb.client.model.Filters;
+
+public class MongoDB_Rename {
+
+    public static void main(String[] args) {
+
+        MongoClient mongoClient =
+                MongoClients.create("mongodb://localhost:27017");
+
+        MongoDatabase database =
+                mongoClient.getDatabase("CollegeDB");
+
+        MongoCollection<Document> collection =
+                database.getCollection("products");
+
+        // Rename "name" to "productName"
+        collection.updateOne(
+                Filters.eq("_id", 1),
+                new Document("$rename",
+                        new Document("name", "productName"))
+        );
+
+        System.out.println("Field renamed successfully!");
+
+        // Display updated document
+        Document doc =
+                collection.find(Filters.eq("_id", 1)).first();
+
+        System.out.println(doc);
+
+        mongoClient.close();
+    }
+}
+
+
+
+
+{
+  "_id": 1,
+  "name": "xPhone",
+  "price": 799
+}
+
+{
+  "_id": 1,
+  "name": "xPhone"
+}
+
+
+// rename 
+
+
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
+
+import com.mongodb.client.model.Filters;
+
+public class RenameUnsetDemo {
+
+    public static void main(String[] args) {
+
+        MongoClient mongoClient =
+                MongoClients.create("mongodb://localhost:27017");
+
+        MongoDatabase database =
+                mongoClient.getDatabase("CollegeDB");
+
+        MongoCollection<Document> collection =
+                database.getCollection("products");
+
+        // Rename field
+        collection.updateOne(
+                Filters.eq("_id", 1),
+                new Document("$rename",
+                        new Document("name", "productName"))
+        );
+
+        // Remove field
+        collection.updateOne(
+                Filters.eq("_id", 1),
+                new Document("$unset",
+                        new Document("price", ""))
+        );
+
+        System.out.println("Rename and Unset completed!");
+
+        Document doc =
+                collection.find(Filters.eq("_id", 1)).first();
+
+        System.out.println(doc);
+
+        mongoClient.close();
+    }
+}
+
+
+
+Rename and Unset completed!
+
+Document{{_id=1, productName=xPhone}}
