@@ -1,0 +1,611 @@
+use vit
+switched to db vit
+db.products.insertMany([
+    { "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate": ISODate("2011-05-14"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 },"color":["white","black"],"storage":[64,128,256]},
+    { "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate": ISODate("2011-09-01") , "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 },"color":["white","black","purple"],"storage":[128,256,512]},
+    { "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate": ISODate("2015-01-14"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 },"color":["blue"],"storage":[16,64,128]},
+    { "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate": ISODate("2020-05-14"),"spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256,1024]},
+    { "_id" : 5, "name" : "SmartPhone", "price" : 599,"releaseDate": ISODate("2022-09-14"), "spec" : { "ram" : 4, "screen" : 5.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256]}
+ ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5
+  }
+}
+db.products.updateOne({ _id: 5 }, { $mul: { price: 1.1 } })
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+db.products.find({
+    _id: 5
+}, {
+    name: 1,
+    price: 1
+})
+{
+  _id: 5,
+  name: 'SmartPhone',
+  price: 658.9000000000001
+}
+//  Using the MongoDB $mul to multiply the values of array elements
+db.products.updateOne({
+    _id: 1
+}, {
+    $mul: {
+        "storage.0": 2,
+        "storage.1": 2,
+        "storage.2": 2
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+// verify the update
+db.products.findOne({ _id: 1 }, { name: 1, storage: 1 })
+{
+  _id: 1,
+  name: 'xPhone',
+  storage: [
+    128,
+    256,
+    512
+  ]
+}
+// Using the $mul operator to multiply the values of a field in embedded documents
+db.products.updateMany({}, {
+    $mul: {
+        "spec.ram": 2
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0
+}
+// The following query returns all documents from the products collection:
+db.products.find({}, { name: 1, "spec.ram": 1 })
+{
+  _id: 1,
+  name: 'xPhone',
+  spec: {
+    ram: 8
+  }
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  spec: {
+    ram: 32
+  }
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  spec: {
+    ram: 24
+  }
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  spec: {
+    ram: 16
+  }
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  spec: {
+    ram: 8
+  }
+}
+// $unset operator
+db.products.insertMany([
+    { "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate": ISODate("2011-05-14"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 },"color":["white","black"],"storage":[64,128,256]},
+    { "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate": ISODate("2011-09-01") , "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 },"color":["white","black","purple"],"storage":[128,256,512]},
+    { "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate": ISODate("2015-01-14"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 },"color":["blue"],"storage":[16,64,128]},
+    { "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate": ISODate("2020-05-14"),"spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256,1024]},
+    { "_id" : 5, "name" : "SmartPhone", "price" : 599,"releaseDate": ISODate("2022-09-14"), "spec" : { "ram" : 4, "screen" : 5.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256]}
+ ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5
+  }
+}
+// Using the MongoDB $unset operator to remove a field from a document
+db.products.updateOne({
+    _id: 1
+}, {
+    $unset: {
+        price: ""
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+// verify the update:
+db.products.find({}, { name: 1, price: 1 })
+{
+  _id: 1,
+  name: 'xPhone'
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  price: 899
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  price: 899
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  price: 699
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  price: 599
+}
+//  Using the MongoDB $unset operator to remove a field in an embedded document
+db.products.updateMany({}, {
+    $unset: {
+        "spec.ram": ""
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0
+}
+db.products.find({}, {
+    spec: 1
+})
+{
+  _id: 1,
+  spec: {
+    screen: 6.5,
+    cpu: 2.66
+  }
+}
+{
+  _id: 2,
+  spec: {
+    screen: 9.5,
+    cpu: 3.66
+  }
+}
+{
+  _id: 3,
+  spec: {
+    screen: 9.7,
+    cpu: 3.66
+  }
+}
+{
+  _id: 4,
+  spec: {
+    screen: 9.7,
+    cpu: 1.66
+  }
+}
+{
+  _id: 5,
+  spec: {
+    screen: 5.7,
+    cpu: 1.66
+  }
+}
+// Using the MongoDB $unset operator to set array elements to null
+db.products.updateMany({}, { $unset: { "storage.0": "" } })
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0
+}
+db.products.find({}, { "storage":1}
+SyntaxError: Unexpected token, expected "," (1:35)
+
+> 1 | db.products.find({}, { "storage":1}
+    |                                    ^
+db.products.find({}, { "storage":1})
+{
+  _id: 1,
+  storage: [
+    null,
+    128,
+    256
+  ]
+}
+{
+  _id: 2,
+  storage: [
+    null,
+    256,
+    512
+  ]
+}
+{
+  _id: 3,
+  storage: [
+    null,
+    64,
+    128
+  ]
+}
+{
+  _id: 4,
+  storage: [
+    null,
+    256,
+    1024
+  ]
+}
+{
+  _id: 5,
+  storage: [
+    null,
+    256
+  ]
+}
+//  Using the MongoDB $unset operator to remove multiple fields from a documen
+db.products.updateMany({}, {
+    $unset: {
+        releaseDate: "",
+        spec: ""
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0
+}
+db.products.find({}, {
+ name: 1,
+ storage: 1,
+ releaseDate: 1,
+ spec: 1
+})
+{
+  _id: 1,
+  name: 'xPhone',
+  storage: [
+    null,
+    128,
+    256
+  ]
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  storage: [
+    null,
+    256,
+    512
+  ]
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  storage: [
+    null,
+    64,
+    128
+  ]
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  storage: [
+    null,
+    256,
+    1024
+  ]
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  storage: [
+    null,
+    256
+  ]
+}
+// $rename operator
+db.products.insertMany([
+    { "_id" : 1, "nmea" : "xPhone", "price" : 799, "releaseDate": ISODate("2011-05-14"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 },"color":["white","black"],"storage":[64,128,256]},
+    { "_id" : 2, "nmea" : "xTablet", "price" : 899, "releaseDate": ISODate("2011-09-01") , "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 },"color":["white","black","purple"],"storage":[128,256,512]},
+    { "_id" : 3, "nmea" : "SmartTablet", "price" : 899, "releaseDate": ISODate("2015-01-14"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 },"color":["blue"],"storage":[16,64,128]},
+    { "_id" : 4, "nmea" : "SmartPad", "price" : 699, "releaseDate": ISODate("2020-05-14"),"spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256,1024]},
+    { "_id" : 5, "nmea" : "SmartPhone", "price" : 599,"releaseDate": ISODate("2022-09-14"), "spec" : { "ram" : 4, "screen" : 5.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256]}
+ ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5
+  }
+}
+// Using MongoDB $rename to rename a field in a document
+db.products.updateMany({}, {
+    $rename: {
+        nmea: "name"
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0
+}
+db.products.find({}, { name: 1 })
+{
+  _id: 1,
+  name: 'xPhone'
+}
+{
+  _id: 2,
+  name: 'xTablet'
+}
+{
+  _id: 3,
+  name: 'SmartTablet'
+}
+{
+  _id: 4,
+  name: 'SmartPad'
+}
+{
+  _id: 5,
+  name: 'SmartPhone'
+}
+
+ // Using MongoDB $rename operator to rename fields in embedded documents
+db.products.updateMany({}, {
+    $rename: {
+        "spec.screen" : "spec.screenSize"
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0
+}
+db.products.find({}, {
+    spec: 1
+})
+{
+  _id: 1,
+  spec: {
+    ram: 4,
+    cpu: 2.66,
+    screenSize: 6.5
+  }
+}
+{
+  _id: 2,
+  spec: {
+    ram: 16,
+    cpu: 3.66,
+    screenSize: 9.5
+  }
+}
+{
+  _id: 3,
+  spec: {
+    ram: 12,
+    cpu: 3.66,
+    screenSize: 9.7
+  }
+}
+{
+  _id: 4,
+  spec: {
+    ram: 8,
+    cpu: 1.66,
+    screenSize: 9.7
+  }
+}
+{
+  _id: 5,
+  spec: {
+    ram: 4,
+    cpu: 1.66,
+    screenSize: 5.7
+  }
+}
+// Using the MongoDB $rename to move field out of the embedded document
+db.products.updateOne({
+ _id: 1
+}, 
+{
+    $rename: {
+        "spec.cpu": "cpu"
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+db.products.find({ _id: 1})
+{
+  _id: 1,
+  price: 799,
+  releaseDate: 2011-05-14T00:00:00.000Z,
+  spec: {
+    ram: 4,
+    screenSize: 6.5
+  },
+  color: [
+    'white',
+    'black'
+  ],
+  storage: [
+    64,
+    128,
+    256
+  ],
+  name: 'xPhone',
+  cpu: 2.66
+}
+// Using the MongoDB $rename to rename a field to an existing field
+db.products.updateOne({
+    _id: 2
+}, {
+    $rename: {
+        "color": "storage"
+    }
+})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+db.products.find({ _id: 2 })
+{
+  _id: 2,
+  price: 899,
+  releaseDate: 2011-09-01T00:00:00.000Z,
+  spec: {
+    ram: 16,
+    cpu: 3.66,
+    screenSize: 9.5
+  },
+  storage: [
+    'white',
+    'black',
+    'purple'
+  ],
+  name: 'xTablet'
+}
+db.products.updateMany(
+    {_id: 6 },
+    { $set: {price: 999} }
+)
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+db.products.updateMany(
+    { _id: 6 },
+    { $set: {price: 999} },
+    { upsert: true}
+)
+{
+  acknowledged: true,
+  insertedId: 6,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 1
+}
+db.products.find({_id:6})
+{
+  _id: 6,
+  price: 999
+}
+// MongoDB deleteCount() method examples
+db.products.insertMany([
+    { "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate": ISODate("2011-05-14"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 },"color":["white","black"],"storage":[64,128,256]},
+    { "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate": ISODate("2011-09-01") , "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 },"color":["white","black","purple"],"storage":[128,256,512]},
+    { "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate": ISODate("2015-01-14"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 },"color":["blue"],"storage":[16,64,128]},
+    { "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate": ISODate("2020-05-14"),"spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256,1024]},
+    { "_id" : 5, "name" : "SmartPhone", "price" : 599,"releaseDate": ISODate("2022-09-14"), "spec" : { "ram" : 4, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256]}
+ ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5
+  }
+}
+// Using the deleteOne() method to delete a single document
+db.products.deleteOne({ _id: 1 })
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+// Using the deleteOne() method to delete the first document from a collection
+db.products.deleteOne({})
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+// MongoDB deleteMany() method example
+db.products.insertMany([
+    { "_id" : 1, "name" : "xPhone", "price" : 799, "releaseDate": ISODate("2011-05-14"), "spec" : { "ram" : 4, "screen" : 6.5, "cpu" : 2.66 },"color":["white","black"],"storage":[64,128,256]},
+    { "_id" : 2, "name" : "xTablet", "price" : 899, "releaseDate": ISODate("2011-09-01") , "spec" : { "ram" : 16, "screen" : 9.5, "cpu" : 3.66 },"color":["white","black","purple"],"storage":[128,256,512]},
+    { "_id" : 3, "name" : "SmartTablet", "price" : 899, "releaseDate": ISODate("2015-01-14"), "spec" : { "ram" : 12, "screen" : 9.7, "cpu" : 3.66 },"color":["blue"],"storage":[16,64,128]},
+    { "_id" : 4, "name" : "SmartPad", "price" : 699, "releaseDate": ISODate("2020-05-14"),"spec" : { "ram" : 8, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256,1024]},
+    { "_id" : 5, "name" : "SmartPhone", "price" : 599,"releaseDate": ISODate("2022-09-14"), "spec" : { "ram" : 4, "screen" : 9.7, "cpu" : 1.66 },"color":["white","orange","gold","gray"],"storage":[128,256]}
+ ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5
+  }
+}
+// Using the deleteMany() method to delete multiple documents
+db.products.deleteMany({ price: 899 })
+{
+  acknowledged: true,
+  deletedCount: 2
+}
+// Using the deleteMany() method to delete all documents
+db.products.deleteMany({})
+{
+  acknowledged: true,
+  deletedCount: 3
+}
+vit
