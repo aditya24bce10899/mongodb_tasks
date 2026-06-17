@@ -1,0 +1,230 @@
+use exam;
+switched to db exam;
+
+db.employees.insertMany([
+{
+    empId: 101,
+    name: "Arun",
+    age: 25,
+    department: "IT",
+    salary: 45000,
+    city: "Chennai",
+    experience: 3,
+    skills: ["Java","MongoDB","Spring"],
+    active: true
+},
+{
+    empId: 102,
+    name: "Priya",
+    age: 28,
+    department: "HR",
+    salary: 55000,
+    city: "Bangalore",
+    experience: 5,
+    skills: ["Recruitment","Training"],
+    active: true
+},
+{
+    empId: 103,
+    name: "Rahul",
+    age: 32,
+    department: "IT",
+    salary: 75000,
+    city: "Mumbai",
+    experience: 8,
+    skills: ["Python","MongoDB","AWS"],
+    active: true
+},
+{
+    empId: 104,
+    name: "Sneha",
+    age: 26,
+    department: "Finance",
+    salary: 50000,
+    city: "Delhi",
+    experience: 4,
+    skills: ["Excel","Taxation"],
+    active: false
+},
+{
+    empId: 105,
+    name: "Karthik",
+    age: 30,
+    department: "IT",
+    salary: 68000,
+    city: "Chennai",
+    experience: 7,
+    skills: ["NodeJS","MongoDB","React"],
+    active: true
+}
+]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6a329b2263bc24d6cfd85b5a'),
+    '1': ObjectId('6a329b2263bc24d6cfd85b5b'),
+    '2': ObjectId('6a329b2263bc24d6cfd85b5c'),
+    '3': ObjectId('6a329b2263bc24d6cfd85b5d'),
+    '4': ObjectId('6a329b2263bc24d6cfd85b5e')
+  }
+}
+
+//Q1. INSERT ONE EMPLOYEE DOCUMENT?
+db.employees.insertOne({
+    empId: 106,
+    name: "Aditya ",
+    age: 21,
+    department: "cse",
+    salary: 148000,
+    city: "Bhopal",
+    experience: 4,
+    skills: ["java","Mongodb","excel"],
+    active: true
+})
+
+//Q2. Insert multiple employee documents
+db.employees.insertMany([
+{
+    empId: 107,
+    name: "Amit",
+    age: 29,
+    department: "IT",
+    salary: 62000,
+    city: "bhagalpur",
+    experience: 6,
+    skills: ["Java","Spring"],
+    active: true
+},
+{
+    empId: 108,
+    name: "Neha",
+    age: 24,
+    department: "HR",
+    salary: 47000,
+    city: "Delhi",
+    experience: 2,
+    skills: ["Recruitment"],
+    active: true
+}
+])
+
+//Q3. Find one employee from IT department
+db.employees.findOne({department:"IT"})
+
+//Q4. Display all employees
+db.employees.find()
+
+//Q5. Display only name and salary
+db.employees.find({}, {name:1, salary:1, _id:0})
+
+//Q6. Find employees with salary equal to 50000
+db.employees.find({salary:50000})
+
+//Q7. Find employees with salary less than 60000
+db.employees.find({salary:{$lt:60000}})
+
+//Q8. Find employees with salary greater than or equal to 60000
+db.employees.find({salary:{$gte:60000}})
+
+
+//Q9. Find employees whose age is not equal to 30
+db.employees.find({age:{$ne:30}})
+
+//Q10. Find employees from Chennai or Mumbai
+db.employees.find({
+    city:{$in:["Chennai","Mumbai"]}
+})
+
+
+//Q11. Find employees not from Chennai
+db.employees.find({
+    city:{$ne:"Chennai"}
+})
+
+//Q12. Find IT employees with salary greater than 50000
+db.employees.find({
+    department:"IT",
+    salary:{$gt:50000}
+})
+
+//Q13. Find employees from Chennai OR Bangalore
+db.employees.find({
+    city: { $in: ["Chennai", "Bangalore"] }
+})
+
+//Q14. Find employees NOT earning above 60000(Salary ≤ 60000)
+db.employees.find({
+    salary: { $lte: 60000 }
+})
+
+//Q15. Find employees neither in IT nor HR
+db.employees.find({
+    department: {
+        $nin: ["IT", "HR"]
+    }
+})
+
+//Q16. Find documents containing experience field
+db.employees.find({
+    experience: { $exists: true }
+})
+
+//Q17. Find documents where salary is Integer
+db.employees.find({
+    salary: { $type: "int" }})
+
+//Q18. Find employees having MongoDB skill
+db.employees.find({
+    skills: "MongoDB"
+})
+
+//Q19. Find employees having both MongoDB and AWS
+db.employees.find({
+    skills: {
+        $all: ["MongoDB", "AWS"]
+    }
+})
+
+//Q20. Find employees with exactly 3 skills
+db.employees.find({
+    skills: { $size: 3 }
+})
+
+//Q21. Find employees having Java skill using elemMatch
+db.employees.find({
+    skills: {
+        $elemMatch: { $eq: "Java" }
+    }
+})
+
+//Q22. Display employees sorted by salary descending
+db.employees.find().sort({
+    salary: -1
+})
+
+//Q23. Display top 3 highest paid employees
+db.employees.find()
+.sort({ salary: -1 })
+.limit(3)
+
+//Q24. Increase salary of employee 101 by 5000
+db.employees.updateOne(
+    { empId: 101 },
+    {
+        $inc: { salary: 5000 }
+    }
+)
+
+//Q25. Increase salary of all IT employees by 10%
+db.employees.updateMany(
+    { department: "IT" },
+    [
+        {
+            $set: {
+                salary: {
+                    $multiply: ["$salary", 1.10]
+                }
+            }
+        }
+    ]
+)
